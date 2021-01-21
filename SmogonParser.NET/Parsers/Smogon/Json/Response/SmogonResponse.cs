@@ -16,6 +16,7 @@ namespace SmogonParser.NET.Parsers.Smogon.Json.Response
     public class SmogonResponse
     {
         public SmogonResponse(
+            string generationPrefix,
             ImmutableHashSet<SmogonGeneration> generations,
             ImmutableHashSet<SmogonPokemon> pokemons,
             ImmutableHashSet<SmogonFormat> formats,
@@ -26,6 +27,7 @@ namespace SmogonParser.NET.Parsers.Smogon.Json.Response
             ImmutableHashSet<SmogonType> types,
             ImmutableHashSet<SmogonItem> item)
         {
+            GenerationPrefix = generationPrefix;
             Generations = generations;
             Pokemons = pokemons;
             Formats = formats;
@@ -36,6 +38,8 @@ namespace SmogonParser.NET.Parsers.Smogon.Json.Response
             Types = types;
             Item = item;
         }
+
+        public string GenerationPrefix { get; }
 
         public ImmutableHashSet<SmogonGeneration> Generations { get; }
 

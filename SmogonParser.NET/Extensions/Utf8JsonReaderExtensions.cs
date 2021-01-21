@@ -122,7 +122,7 @@ namespace SmogonParser.NET.Extensions
             return val;
         }
 
-        public static void ReadOrThrow(ref this Utf8JsonReader reader, Regex regex)
+        public static Match ReadOrThrow(ref this Utf8JsonReader reader, Regex regex)
         {
             var str = reader.ReadStringOrThrow();
 
@@ -130,6 +130,8 @@ namespace SmogonParser.NET.Extensions
             {
                 throw new JsonException($"Expected string matching {regex}, got {str}");
             }
+
+            return regex.Match(str);
         }
 
         public static bool TryRead(

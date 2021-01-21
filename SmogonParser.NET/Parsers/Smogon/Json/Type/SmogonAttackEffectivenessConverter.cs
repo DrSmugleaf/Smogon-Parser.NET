@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using SmogonParser.NET.Extensions;
 
@@ -19,7 +18,8 @@ namespace SmogonParser.NET.Parsers.Smogon.Json.Type
 
         public override void Write(Utf8JsonWriter writer, SmogonAttackEffectiveness value, JsonSerializerOptions options)
         {
-            throw new NotImplementedException();
+            writer.WriteStringValue(value.Name);
+            writer.WriteNumberValue(value.Effectiveness);
         }
     }
 }

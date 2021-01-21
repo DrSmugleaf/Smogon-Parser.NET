@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
@@ -18,14 +17,23 @@ namespace SmogonParser.NET.Parsers.Smogon.Json.Response
 {
     public class SmogonResponseConverter : JsonConverter<SmogonResponse>
     {
-        private static readonly Regex DumpBasicsGen = new(@"\[""dex"",""dump-basics"",{""gen"":""\w+""}\]");
+        private static readonly Regex DumpBasicsGen = new(@"\[""dex"",""dump-basics"",{""gen"":""(\w+)""}\]");
+
+        private const string DumpGensString = @"[""dex"",""dump-gens""]";
+
+        private string DumpBasicsGenString(string generation)
+        {
+            generation = generation.ToLowerInvariant();
+
+            return $@"\[""dex"",""dump-basics"",{{""gen"":""{generation}""}}\]";
+        }
 
         public override SmogonResponse Read(ref Utf8JsonReader reader, System.Type typeToConvert, JsonSerializerOptions options)
         {
             reader.ReadOrThrow("injectRpcs");
 
             reader.ReadOrThrow(JsonTokenType.StartArray, 2);
-            reader.ReadOrThrow(@"[""dex"",""dump-gens""]");
+            reader.ReadOrThrow(DumpGensString);
 
             reader.ReadOrThrow(JsonTokenType.StartArray);
 
@@ -34,7 +42,8 @@ namespace SmogonParser.NET.Parsers.Smogon.Json.Response
             reader.ReadOrThrow(JsonTokenType.EndArray);
 
             reader.ReadOrThrow(JsonTokenType.StartArray);
-            reader.ReadOrThrow(DumpBasicsGen);
+            var match = reader.ReadOrThrow(DumpBasicsGen);
+            var generationPrefix = match.Groups[1].Value;
 
             reader.ReadOrThrow(JsonTokenType.StartObject);
 
@@ -51,15 +60,45 @@ namespace SmogonParser.NET.Parsers.Smogon.Json.Response
             reader.ReadOrThrow(JsonTokenType.EndObject);
             reader.ReadOrThrow(JsonTokenType.EndArray, 2);
             reader.ReadOrThrow("showEditorUI");
-            reader.Read();
+            reader.Read(); // null
             reader.ReadOrThrow(JsonTokenType.EndObject);
 
-            return new SmogonResponse(generations, pokemons, formats, natures, abilities, moveFlags, moves, types, items);
+            return new SmogonResponse(generationPrefix, generations, pokemons, formats, natures, abilities, moveFlags, moves, types, items);
         }
 
         public override void Write(Utf8JsonWriter writer, SmogonResponse value, JsonSerializerOptions options)
         {
-            throw new NotImplementedException();
+            writer.WriteStringValue("injectRpcs");
+
+            writer.WriteStartArray();
+            writer.WriteStringValue(DumpGensString);
+
+            writer.WriteStartArray();
+
+            writer.WriteStringValue(JsonSerializer.Serialize(value.Generations, options));
+
+            writer.WriteEndArray();
+
+            writer.WriteStartArray();
+            writer.WriteStringValue(DumpBasicsGenString(value.GenerationPrefix));
+
+            writer.WriteStartObject();
+
+            writer.WriteString("pokemon", JsonSerializer.Serialize(value.Pokemons, options));
+            writer.WriteString("formats", JsonSerializer.Serialize(value.Formats, options));
+            writer.WriteString("natures", JsonSerializer.Serialize(value.Natures, options));
+            writer.WriteString("abilities", JsonSerializer.Serialize(value.Abilities, options));
+            writer.WriteString("moveflags", JsonSerializer.Serialize(value.MoveFlags, options));
+            writer.WriteString("moves", JsonSerializer.Serialize(value.Moves, options));
+            writer.WriteString("types", JsonSerializer.Serialize(value.Types, options));
+            writer.WriteString("items", JsonSerializer.Serialize(value.Item, options));
+
+            writer.WriteEndArray();
+            writer.WriteEndObject();
+            writer.WriteEndArray();
+            writer.WriteEndArray();
+            writer.WriteNull("showEditorUI");
+            writer.WriteEndObject();
         }
     }
 }

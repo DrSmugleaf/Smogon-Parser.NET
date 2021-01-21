@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using SmogonParser.NET.Extensions;
@@ -29,7 +28,22 @@ namespace SmogonParser.NET.Parsers.Smogon.Json.Type
 
         public override void Write(Utf8JsonWriter writer, SmogonType value, JsonSerializerOptions options)
         {
-            throw new NotImplementedException();
+            writer.WriteString("name", value.Name);
+
+            writer.WritePropertyName("atk_effectives");
+            writer.WriteStartArray();
+
+            writer.WriteStringValue(JsonSerializer.Serialize(value.AttackEffectiveness));
+
+            writer.WriteEndArray();
+
+            writer.WritePropertyName("genfamily");
+            writer.WriteStartArray();
+
+            writer.WriteStringValue(JsonSerializer.Serialize(value.GenFamily));
+            writer.WriteString("description", value.Description);
+
+            writer.WriteEndObject();
         }
     }
 }
