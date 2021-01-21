@@ -28,44 +28,15 @@ namespace SmogonParser.NET.Parsers.Smogon.Json
             reader.ReadOrThrow(DumpBasicsGen);
 
             reader.ReadOrThrow(JsonTokenType.StartObject);
-            reader.ReadOrThrow("pokemon");
 
-            var pokemons = reader.Deserialize<HashSet<SmogonPokemon>>(options);
-
-            reader.GetOrThrow(JsonTokenType.EndArray);
-            reader.ReadOrThrow("formats");
-
-            var formats = reader.Deserialize<HashSet<SmogonFormat>>(options);
-
-            reader.GetOrThrow(JsonTokenType.EndArray);
-            reader.ReadOrThrow("natures");
-
-            var natures = reader.Deserialize<HashSet<SmogonNature>>(options);
-
-            reader.GetOrThrow(JsonTokenType.EndArray);
-            reader.ReadOrThrow("abilities");
-
-            var abilities = reader.Deserialize<HashSet<SmogonAbility>>(options);
-
-            reader.GetOrThrow(JsonTokenType.EndArray);
-            reader.ReadOrThrow("moveflags");
-
-            var moveFlags = reader.Deserialize<HashSet<SmogonMoveFlag>>(options);
-
-            reader.GetOrThrow(JsonTokenType.EndArray);
-            reader.ReadOrThrow("moves");
-
-            var moves = reader.Deserialize<HashSet<SmogonMove>>(options);
-
-            reader.GetOrThrow(JsonTokenType.EndArray);
-            reader.ReadOrThrow("types");
-
-            var types = reader.Deserialize<HashSet<SmogonType>>(options);
-
-            reader.GetOrThrow(JsonTokenType.EndArray);
-            reader.ReadOrThrow("items");
-
-            var items = reader.Deserialize<HashSet<SmogonItem>>(options);
+            var pokemons = reader.Deserialize<HashSet<SmogonPokemon>>("pokemon", options);
+            var formats = reader.Deserialize<HashSet<SmogonFormat>>("formats", options);
+            var natures = reader.Deserialize<HashSet<SmogonNature>>("natures", options);
+            var abilities = reader.Deserialize<HashSet<SmogonAbility>>("abilities", options);
+            var moveFlags = reader.Deserialize<HashSet<SmogonMoveFlag>>("moveflags", options);
+            var moves = reader.Deserialize<HashSet<SmogonMove>>("moves", options);
+            var types = reader.Deserialize<HashSet<SmogonType>>("types", options);
+            var items = reader.Deserialize<HashSet<SmogonItem>>("items", options);
 
             reader.GetOrThrow(JsonTokenType.EndArray);
             reader.ReadOrThrow(JsonTokenType.EndObject);

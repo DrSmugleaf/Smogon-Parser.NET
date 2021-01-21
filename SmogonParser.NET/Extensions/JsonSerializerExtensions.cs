@@ -18,5 +18,17 @@ namespace SmogonParser.NET.Extensions
         {
             return (value = JsonSerializer.Deserialize<T>(ref reader, options)) != null;
         }
+
+        public static T Deserialize<T>(
+            ref this Utf8JsonReader reader,
+            string expectedKey,
+            JsonSerializerOptions? options = null)
+        {
+            reader.ReadOrThrow(expectedKey);
+            var value = reader.Deserialize<T>(options);
+            reader.GetOrThrow(JsonTokenType.EndArray);
+
+            return value;
+        }
     }
 }
