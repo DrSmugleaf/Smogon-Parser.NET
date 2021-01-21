@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using System.Text.Json.Serialization;
 
-namespace SmogonParser.NET.Parsers.Smogon.Json
+namespace SmogonParser.NET.Parsers.Smogon.Json.Item
 {
     public class SmogonItem
     {

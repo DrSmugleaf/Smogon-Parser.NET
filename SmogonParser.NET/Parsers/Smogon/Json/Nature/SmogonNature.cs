@@ -1,7 +1,7 @@
 ﻿using System.Collections.Immutable;
 using System.Text.Json.Serialization;
 
-namespace SmogonParser.NET.Parsers.Smogon.Json
+namespace SmogonParser.NET.Parsers.Smogon.Json.Nature
 {
     public class SmogonNature
     {

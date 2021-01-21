@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace SmogonParser.NET.Parsers.Smogon.Json
+namespace SmogonParser.NET.Parsers.Smogon.Json.Generation
 {
     public class SmogonGeneration
     {

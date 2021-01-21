@@ -4,11 +4,11 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using SmogonParser.NET.Extensions;
 
-namespace SmogonParser.NET.Parsers.Smogon.Json
+namespace SmogonParser.NET.Parsers.Smogon.Json.Type
 {
     public class SmogonTypeConverter : JsonConverter<SmogonType>
     {
-        public override SmogonType Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override SmogonType Read(ref Utf8JsonReader reader, System.Type typeToConvert, JsonSerializerOptions options)
         {
             var name = reader.ReadValueOrThrow<string>("name");
 

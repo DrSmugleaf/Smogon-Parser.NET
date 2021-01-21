@@ -1,12 +1,13 @@
 ﻿using System.Net;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using SmogonParser.NET.Parsers.Smogon.Json.Response;
 
 namespace SmogonParser.NET.Parsers.Smogon.Json
 {
     public class JsonDownloader
     {
-        private static readonly Regex DexSettingsMatcher = new(@"<script type=""text/javascript"">\s+dexSettings = (.+)\s+</script>\s+</head>");
+        private static readonly Regex JsonMatcher = new(@"<script type=""text/javascript"">\s+dexSettings = (.+)\s+</script>\s+</head>");
 
         public string GetGenerationUrl(string generation)
         {
@@ -17,13 +18,13 @@ namespace SmogonParser.NET.Parsers.Smogon.Json
         {
             var url = GetGenerationUrl(generation);
             var html = new WebClient().DownloadString(url);
-            var match = DexSettingsMatcher.Match(html);
+            var match = JsonMatcher.Match(html);
 
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             };
-            var json = JsonSerializer.Deserialize<SmogonResponse>(match.Groups[1].Value, options);
+            var response = JsonSerializer.Deserialize<SmogonResponse>(match.Groups[1].Value, options);
         }
     }
 }
