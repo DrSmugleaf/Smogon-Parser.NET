@@ -8,25 +8,25 @@ namespace SmogonParser.NET.Parsers.Smogon.Json
         public SmogonAbility(
             string name,
             string description,
-            string isNonstandard,
+            string isNonStandard,
             ImmutableHashSet<string> genFamily)
         {
             Name = name;
             Description = description;
-            IsNonstandard = isNonstandard;
+            IsNonStandard = isNonStandard;
             GenFamily = genFamily;
         }
 
         [JsonPropertyName("name")]
-        public string Name { get; set; }
+        public string Name { get; }
 
         [JsonPropertyName("description")]
-        public string Description { get; set; }
+        public string Description { get; }
 
         [JsonPropertyName("isNonstandard")]
-        public string IsNonstandard { get; set; }
+        public string IsNonStandard { get; }
 
         [JsonPropertyName("genfamily")]
-        public ImmutableHashSet<string> GenFamily { get; set; }
+        public ImmutableHashSet<string> GenFamily { get; }
     }
 }
