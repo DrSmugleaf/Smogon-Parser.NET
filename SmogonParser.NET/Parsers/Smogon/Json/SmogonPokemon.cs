@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Collections.Immutable;
+using System.Text.Json.Serialization;
 
 namespace SmogonParser.NET.Parsers.Smogon.Json
 {
@@ -13,7 +14,12 @@ namespace SmogonParser.NET.Parsers.Smogon.Json
             int specialDefense,
             int speed,
             decimal weight,
-            decimal height)
+            decimal height,
+            ImmutableHashSet<string> types,
+            ImmutableHashSet<string> abilities,
+            ImmutableHashSet<string> formats,
+            string isNonStandard,
+            SmogonOob oob)
         {
             Name = name;
             Health = health;
@@ -24,6 +30,11 @@ namespace SmogonParser.NET.Parsers.Smogon.Json
             Speed = speed;
             Weight = weight;
             Height = height;
+            Types = types;
+            Abilities = abilities;
+            Formats = formats;
+            IsNonStandard = isNonStandard;
+            Oob = oob;
         }
 
         [JsonPropertyName("name")]
@@ -52,5 +63,20 @@ namespace SmogonParser.NET.Parsers.Smogon.Json
 
         [JsonPropertyName("height")]
         public decimal Height { get; }
+
+        [JsonPropertyName("types")]
+        public ImmutableHashSet<string> Types { get; }
+
+        [JsonPropertyName("abilities")]
+        public ImmutableHashSet<string> Abilities { get; }
+
+        [JsonPropertyName("formats")]
+        public ImmutableHashSet<string> Formats { get; }
+
+        [JsonPropertyName("isNonstandard")]
+        public string IsNonStandard { get; }
+
+        [JsonPropertyName("oob")]
+        public SmogonOob Oob { get; }
     }
 }
