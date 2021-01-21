@@ -19,6 +19,16 @@ namespace SmogonParser.NET.Extensions
             return (value = JsonSerializer.Deserialize<T>(ref reader, options)) != null;
         }
 
+        /// <summary>
+        ///     Deserializes a named array of type "object": []
+        /// </summary>
+        /// <param name="reader">The reader to deserialize from.</param>
+        /// <param name="expectedKey">The key to look for when deserializing the array.</param>
+        /// <param name="options">
+        ///     Optional instance of <see cref="JsonSerializerOptions"/> to use.
+        /// </param>
+        /// <typeparam name="T">The type to deserialize into.</typeparam>
+        /// <returns></returns>
         public static T Deserialize<T>(
             ref this Utf8JsonReader reader,
             string expectedKey,

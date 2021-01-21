@@ -6,15 +6,15 @@ namespace SmogonParser.NET.Parsers.Smogon.Json
     public class SmogonOob
     {
         [JsonPropertyName("dex_number")]
-        public int DexNumber { get; set; }
+        public int DexNumber { get; }
 
         [JsonPropertyName("evos")]
-        public List<string> Evos { get; set; }
+        public List<string> Evos { get; }
 
         [JsonPropertyName("alts")]
-        public List<object> Alts { get; set; }
+        public List<object> Alts { get; }
 
         [JsonPropertyName("genfamily")]
-        public List<string> Genfamily { get; set; }
+        public List<string> Genfamily { get; }
     }
 }

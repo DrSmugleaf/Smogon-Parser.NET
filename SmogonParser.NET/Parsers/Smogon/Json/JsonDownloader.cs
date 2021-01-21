@@ -6,7 +6,6 @@ namespace SmogonParser.NET.Parsers.Smogon.Json
 {
     public class JsonDownloader
     {
-        // private static readonly Regex DexSettingsMatcher = new(@"<script type=""text/javascript"">\s+dexSettings = {""injectRpcs"":\[(.+)\].*}\s+</script>\s+</head>");
         private static readonly Regex DexSettingsMatcher = new(@"<script type=""text/javascript"">\s+dexSettings = (.+)\s+</script>\s+</head>");
 
         public string GetGenerationUrl(string generation)
