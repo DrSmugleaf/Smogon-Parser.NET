@@ -1,20 +1,32 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Immutable;
 using System.Text.Json.Serialization;
 
 namespace SmogonParser.NET.Parsers.Smogon.Json
 {
     public class SmogonOob
     {
+        public SmogonOob(
+            int dexNumber,
+            ImmutableHashSet<string> evolutions,
+            ImmutableHashSet<string> alts,
+            ImmutableHashSet<string> genFamily)
+        {
+            DexNumber = dexNumber;
+            Evolutions = evolutions;
+            Alts = alts;
+            GenFamily = genFamily;
+        }
+
         [JsonPropertyName("dex_number")]
         public int DexNumber { get; }
 
         [JsonPropertyName("evos")]
-        public List<string> Evos { get; }
+        public ImmutableHashSet<string> Evolutions { get; }
 
         [JsonPropertyName("alts")]
-        public List<object> Alts { get; }
+        public ImmutableHashSet<string> Alts { get; }
 
         [JsonPropertyName("genfamily")]
-        public List<string> Genfamily { get; }
+        public ImmutableHashSet<string> GenFamily { get; }
     }
 }

@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using static System.StringComparison;
 
 namespace SmogonParser.NET.Extensions
 {
@@ -42,6 +43,42 @@ namespace SmogonParser.NET.Extensions
             }
         }
 
+        public static T ReadOrThrow<T>(ref this Utf8JsonReader reader)
+        {
+            reader.Read();
+
+            object? value = Type.GetTypeCode(typeof(T)) switch
+            {
+                TypeCode.Boolean => reader.GetBoolean(),
+                TypeCode.Char => reader.GetString()?.ToCharArray().Single(),
+                TypeCode.SByte => reader.GetSByte(),
+                TypeCode.Byte => reader.GetByte(),
+                TypeCode.Int16 => reader.GetInt16(),
+                TypeCode.UInt16 => reader.GetUInt16(),
+                TypeCode.Int32 => reader.GetInt32(),
+                TypeCode.UInt32 => reader.GetUInt32(),
+                TypeCode.Int64 => reader.GetInt64(),
+                TypeCode.UInt64 => reader.GetUInt64(),
+                TypeCode.Single => reader.GetSingle(),
+                TypeCode.Double => reader.GetDouble(),
+                TypeCode.Decimal => reader.GetDecimal(),
+                TypeCode.DateTime => reader.GetDateTime(),
+                TypeCode.String => reader.GetString(),
+                _ => throw new ArgumentOutOfRangeException()
+            };
+
+            return (T) (value ?? throw new NullReferenceException());
+        }
+
+        public static T ReadValueOrThrow<T>(
+            ref this Utf8JsonReader reader,
+            string expectedKey,
+            StringComparison comparison = InvariantCultureIgnoreCase)
+        {
+            reader.ReadOrThrow(expectedKey, comparison);
+            return reader.ReadOrThrow<T>();
+        }
+
         public static bool TryRead(ref this Utf8JsonReader reader, JsonTokenType expectedToken)
         {
             return reader.Read() && reader.TokenType == expectedToken;
@@ -50,7 +87,7 @@ namespace SmogonParser.NET.Extensions
         public static string? Read(
             ref this Utf8JsonReader reader,
             string expectedString,
-            StringComparison comparison = StringComparison.InvariantCultureIgnoreCase)
+            StringComparison comparison = InvariantCultureIgnoreCase)
         {
             if (!reader.Read())
             {
@@ -75,7 +112,7 @@ namespace SmogonParser.NET.Extensions
         public static string ReadOrThrow(
             ref this Utf8JsonReader reader,
             string expectedString,
-            StringComparison comparison = StringComparison.InvariantCultureIgnoreCase)
+            StringComparison comparison = InvariantCultureIgnoreCase)
         {
             if (!reader.TryRead(expectedString, out var val, comparison))
             {
@@ -99,7 +136,7 @@ namespace SmogonParser.NET.Extensions
             ref this Utf8JsonReader reader,
             string expectedString,
             [NotNullWhen(true)] out string? str,
-            StringComparison comparison = StringComparison.InvariantCultureIgnoreCase)
+            StringComparison comparison = InvariantCultureIgnoreCase)
         {
             return (str = reader.Read(expectedString, comparison)) != null;
         }
@@ -107,7 +144,7 @@ namespace SmogonParser.NET.Extensions
         public static bool TryRead(
             ref this Utf8JsonReader reader,
             string expectedString,
-            StringComparison comparison = StringComparison.InvariantCultureIgnoreCase)
+            StringComparison comparison = InvariantCultureIgnoreCase)
         {
             return reader.Read(expectedString, comparison) != null;
         }
@@ -147,74 +184,16 @@ namespace SmogonParser.NET.Extensions
             return val != null;
         }
 
-        public static string ReadValueOrThrow(
-            ref this Utf8JsonReader reader,
-            string expectedKey,
-            StringComparison comparison = StringComparison.InvariantCultureIgnoreCase)
-        {
-            reader.ReadOrThrow(expectedKey, comparison);
-            return reader.ReadStringOrThrow();
-        }
-
         public static int ReadIntOrThrow(ref this Utf8JsonReader reader)
         {
             reader.ReadOrThrow(JsonTokenType.Number);
             return reader.GetInt32();
         }
 
-        public static int ReadIntValueOrThrow(
-            ref this Utf8JsonReader reader,
-            string expectedKey,
-            StringComparison comparison = StringComparison.InvariantCultureIgnoreCase)
-        {
-            reader.ReadOrThrow(expectedKey, comparison);
-            return reader.ReadIntOrThrow();
-        }
-
         public static float ReadFloatOrThrow(ref this Utf8JsonReader reader)
         {
             reader.ReadOrThrow(JsonTokenType.Number);
             return reader.GetSingle();
-        }
-
-        public static float ReadFloatValueOrThrow(
-            ref this Utf8JsonReader reader,
-            string expectedKey,
-            StringComparison comparison = StringComparison.InvariantCultureIgnoreCase)
-        {
-            reader.ReadOrThrow(expectedKey, comparison);
-            return reader.ReadFloatOrThrow();
-        }
-
-        public static T ReadValueOrThrow<T>(
-            ref this Utf8JsonReader reader,
-            string expectedKey,
-            StringComparison comparison = StringComparison.InvariantCultureIgnoreCase)
-        {
-            reader.ReadOrThrow(expectedKey, comparison);
-            reader.Read();
-
-            object? value = Type.GetTypeCode(typeof(T)) switch
-            {
-                TypeCode.Boolean => reader.GetBoolean(),
-                TypeCode.Char => reader.GetString()!.ToCharArray().Single(),
-                TypeCode.SByte => reader.GetSByte(),
-                TypeCode.Byte => reader.GetByte(),
-                TypeCode.Int16 => reader.GetInt16(),
-                TypeCode.UInt16 => reader.GetUInt16(),
-                TypeCode.Int32 => reader.GetInt32(),
-                TypeCode.UInt32 => reader.GetUInt32(),
-                TypeCode.Int64 => reader.GetInt64(),
-                TypeCode.UInt64 => reader.GetUInt64(),
-                TypeCode.Single => reader.GetSingle(),
-                TypeCode.Double => reader.GetDouble(),
-                TypeCode.Decimal => reader.GetDecimal(),
-                TypeCode.DateTime => reader.GetDateTime(),
-                TypeCode.String => reader.GetString(),
-                _ => throw new ArgumentOutOfRangeException()
-            };
-
-            return (T) (value ?? throw new NullReferenceException());
         }
     }
 }
