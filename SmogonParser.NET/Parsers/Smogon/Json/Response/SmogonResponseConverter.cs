@@ -8,7 +8,6 @@ using SmogonParser.NET.Parsers.Smogon.Json.Format;
 using SmogonParser.NET.Parsers.Smogon.Json.Generation;
 using SmogonParser.NET.Parsers.Smogon.Json.Item;
 using SmogonParser.NET.Parsers.Smogon.Json.Move;
-using SmogonParser.NET.Parsers.Smogon.Json.MoveFlag;
 using SmogonParser.NET.Parsers.Smogon.Json.Nature;
 using SmogonParser.NET.Parsers.Smogon.Json.Pokemon;
 using SmogonParser.NET.Parsers.Smogon.Json.Type;
@@ -25,7 +24,7 @@ namespace SmogonParser.NET.Parsers.Smogon.Json.Response
         {
             generation = generation.ToLowerInvariant();
 
-            return $@"\[""dex"",""dump-basics"",{{""gen"":""{generation}""}}\]";
+            return $@"[""dex"",""dump-basics"",{{""gen"":""{generation}""}}]";
         }
 
         public override SmogonResponse Read(ref Utf8JsonReader reader, System.Type typeToConvert, JsonSerializerOptions options)
@@ -51,7 +50,7 @@ namespace SmogonParser.NET.Parsers.Smogon.Json.Response
             var formats = reader.Deserialize<ImmutableHashSet<SmogonFormat>>("formats", options);
             var natures = reader.Deserialize<ImmutableHashSet<SmogonNature>>("natures", options);
             var abilities = reader.Deserialize<ImmutableHashSet<SmogonAbility>>("abilities", options);
-            var moveFlags = reader.Deserialize<ImmutableHashSet<SmogonMoveFlag>>("moveflags", options);
+            reader.Deserialize<ImmutableHashSet<string>>("moveflags", options);
             var moves = reader.Deserialize<ImmutableHashSet<SmogonMove>>("moves", options);
             var types = reader.Deserialize<ImmutableHashSet<SmogonType>>("types", options);
             var items = reader.Deserialize<ImmutableHashSet<SmogonItem>>("items", options);
@@ -63,19 +62,19 @@ namespace SmogonParser.NET.Parsers.Smogon.Json.Response
             reader.Read(); // null
             reader.ReadOrThrow(JsonTokenType.EndObject);
 
-            return new SmogonResponse(generationPrefix, generations, pokemons, formats, natures, abilities, moveFlags, moves, types, items);
+            return new SmogonResponse(generationPrefix, generations, pokemons, formats, natures, abilities, moves, types, items);
         }
 
         public override void Write(Utf8JsonWriter writer, SmogonResponse value, JsonSerializerOptions options)
         {
-            writer.WriteStringValue("injectRpcs");
+            writer.WriteStartObject();
+            writer.WritePropertyName("injectRpcs");
 
+            writer.WriteStartArray();
             writer.WriteStartArray();
             writer.WriteStringValue(DumpGensString);
 
-            writer.WriteStartArray();
-
-            writer.WriteStringValue(JsonSerializer.Serialize(value.Generations, options));
+            JsonSerializer.Serialize(writer, value.Generations, options);
 
             writer.WriteEndArray();
 
@@ -84,16 +83,31 @@ namespace SmogonParser.NET.Parsers.Smogon.Json.Response
 
             writer.WriteStartObject();
 
-            writer.WriteString("pokemon", JsonSerializer.Serialize(value.Pokemons, options));
-            writer.WriteString("formats", JsonSerializer.Serialize(value.Formats, options));
-            writer.WriteString("natures", JsonSerializer.Serialize(value.Natures, options));
-            writer.WriteString("abilities", JsonSerializer.Serialize(value.Abilities, options));
-            writer.WriteString("moveflags", JsonSerializer.Serialize(value.MoveFlags, options));
-            writer.WriteString("moves", JsonSerializer.Serialize(value.Moves, options));
-            writer.WriteString("types", JsonSerializer.Serialize(value.Types, options));
-            writer.WriteString("items", JsonSerializer.Serialize(value.Item, options));
+            writer.WritePropertyName("pokemon");
+            JsonSerializer.Serialize(writer, value.Pokemons, options);
 
+            writer.WritePropertyName("formats");
+            JsonSerializer.Serialize(writer, value.Formats, options);
+
+            writer.WritePropertyName("natures");
+            JsonSerializer.Serialize(writer, value.Natures, options);
+
+            writer.WritePropertyName("abilities");
+            JsonSerializer.Serialize(writer, value.Abilities, options);
+
+            writer.WritePropertyName("moveflags");
+            writer.WriteStartArray();
             writer.WriteEndArray();
+
+            writer.WritePropertyName("moves");
+            JsonSerializer.Serialize(writer, value.Moves, options);
+
+            writer.WritePropertyName("types");
+            JsonSerializer.Serialize(writer, value.Types, options);
+
+            writer.WritePropertyName("items");
+            JsonSerializer.Serialize(writer, value.Items, options);
+
             writer.WriteEndObject();
             writer.WriteEndArray();
             writer.WriteEndArray();

@@ -28,19 +28,15 @@ namespace SmogonParser.NET.Parsers.Smogon.Json.Type
 
         public override void Write(Utf8JsonWriter writer, SmogonType value, JsonSerializerOptions options)
         {
+            writer.WriteStartObject();
             writer.WriteString("name", value.Name);
 
             writer.WritePropertyName("atk_effectives");
-            writer.WriteStartArray();
-
-            writer.WriteStringValue(JsonSerializer.Serialize(value.AttackEffectiveness));
-
-            writer.WriteEndArray();
+            JsonSerializer.Serialize(writer, value.AttackEffectiveness, options);
 
             writer.WritePropertyName("genfamily");
-            writer.WriteStartArray();
+            JsonSerializer.Serialize(writer, value.GenFamily, options);
 
-            writer.WriteStringValue(JsonSerializer.Serialize(value.GenFamily));
             writer.WriteString("description", value.Description);
 
             writer.WriteEndObject();

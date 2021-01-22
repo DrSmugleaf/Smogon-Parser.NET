@@ -73,9 +73,9 @@ namespace SmogonParser.NET.Extensions
         public static T ReadValueOrThrow<T>(
             ref this Utf8JsonReader reader,
             string expectedKey,
-            StringComparison comparison = InvariantCultureIgnoreCase)
+            JsonSerializerOptions? options = null)
         {
-            reader.ReadOrThrow(expectedKey, comparison);
+            reader.ReadOrThrow(expectedKey, options);
             return reader.ReadOrThrow<T>();
         }
 
@@ -87,7 +87,7 @@ namespace SmogonParser.NET.Extensions
         public static string? Read(
             ref this Utf8JsonReader reader,
             string expectedString,
-            StringComparison comparison = InvariantCultureIgnoreCase)
+            JsonSerializerOptions? options = null)
         {
             if (!reader.Read())
             {
@@ -101,6 +101,10 @@ namespace SmogonParser.NET.Extensions
                 return null;
             }
 
+            var comparison = options?.PropertyNameCaseInsensitive ?? false
+                ? InvariantCultureIgnoreCase
+                : InvariantCulture;
+
             if (!str.Equals(expectedString, comparison))
             {
                 return null;
@@ -112,9 +116,9 @@ namespace SmogonParser.NET.Extensions
         public static string ReadOrThrow(
             ref this Utf8JsonReader reader,
             string expectedString,
-            StringComparison comparison = InvariantCultureIgnoreCase)
+            JsonSerializerOptions? options = null)
         {
-            if (!reader.TryRead(expectedString, out var val, comparison))
+            if (!reader.TryRead(expectedString, out var val, options))
             {
                 throw new JsonException($"Expected {expectedString}, got {val}");
             }
@@ -138,17 +142,17 @@ namespace SmogonParser.NET.Extensions
             ref this Utf8JsonReader reader,
             string expectedString,
             [NotNullWhen(true)] out string? str,
-            StringComparison comparison = InvariantCultureIgnoreCase)
+            JsonSerializerOptions? options = null)
         {
-            return (str = reader.Read(expectedString, comparison)) != null;
+            return (str = reader.Read(expectedString, options)) != null;
         }
 
         public static bool TryRead(
             ref this Utf8JsonReader reader,
             string expectedString,
-            StringComparison comparison = InvariantCultureIgnoreCase)
+            JsonSerializerOptions? options = null)
         {
-            return reader.Read(expectedString, comparison) != null;
+            return reader.Read(expectedString, options) != null;
         }
 
         public static string? ReadString(ref this Utf8JsonReader reader)

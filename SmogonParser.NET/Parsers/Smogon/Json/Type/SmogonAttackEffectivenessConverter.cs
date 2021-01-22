@@ -18,8 +18,10 @@ namespace SmogonParser.NET.Parsers.Smogon.Json.Type
 
         public override void Write(Utf8JsonWriter writer, SmogonAttackEffectiveness value, JsonSerializerOptions options)
         {
+            writer.WriteStartArray();
             writer.WriteStringValue(value.Name);
             writer.WriteNumberValue(value.Effectiveness);
+            writer.WriteEndArray();
         }
     }
 }
