@@ -80,17 +80,7 @@ namespace SmogonParser.NET.Parsers.Smogon.Json.Response
 
         public override int GetHashCode()
         {
-            var hashCode = new HashCode();
-            hashCode.Add(GenerationPrefix);
-            hashCode.Add(Generations);
-            hashCode.Add(Pokemons);
-            hashCode.Add(Formats);
-            hashCode.Add(Natures);
-            hashCode.Add(Abilities);
-            hashCode.Add(Moves);
-            hashCode.Add(Types);
-            hashCode.Add(Items);
-            return hashCode.ToHashCode();
+            return GenerationPrefix.GetHashCode();
         }
 
         public static bool operator ==(SmogonResponse? left, SmogonResponse? right)
