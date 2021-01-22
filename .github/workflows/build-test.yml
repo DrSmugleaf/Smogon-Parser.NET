@@ -25,4 +25,4 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore /p:WarningsAsErrors=nullable
     - name: SmogonParser.NET.IntegrationTests
-      run: dotnet test --no-build SmogonParser.NET.IntegrationTests/SmogonParser.NET.IntegrationTests.csproj -v n
+      run: dotnet test --no-build
