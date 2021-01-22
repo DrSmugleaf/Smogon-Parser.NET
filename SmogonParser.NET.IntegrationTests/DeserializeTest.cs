@@ -11,7 +11,7 @@ namespace SmogonParser.NET.IntegrationTests
         [TestCase(TestConstants.InjectRpcsJson)]
         public void Test(string json)
         {
-            var response = JsonSerializer.Deserialize<SmogonResponse>(json);
+            var response = SmogonResponseExtensions.FromJsonOrThrow(json);
 
             Assert.NotNull(response);
 

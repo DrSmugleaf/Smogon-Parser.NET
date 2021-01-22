@@ -31,7 +31,7 @@ namespace SmogonParser.NET.IntegrationTests
                     ImmutableHashSet<SmogonType>.Empty,
                     ImmutableHashSet<SmogonItem>.Empty);
 
-            var json = JsonSerializer.Serialize(response);
+            var json = response.ToJson();
 
             Assert.NotNull(json);
         }
