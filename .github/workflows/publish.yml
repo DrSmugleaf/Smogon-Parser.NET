@@ -19,3 +19,4 @@ jobs:
         PROJECT_FILE_PATH: SmogonParser.NET/SmogonParser.NET.csproj
         # API key to authenticate with NuGet server
         NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+        VERSION_REGEX: ^\s*<PackageVersion>(.*)<\/PackageVersion>\s*$
