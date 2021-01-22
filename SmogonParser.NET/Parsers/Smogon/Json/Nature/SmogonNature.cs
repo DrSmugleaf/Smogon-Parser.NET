@@ -1,9 +1,10 @@
-﻿using System.Collections.Immutable;
+﻿using System;
+using System.Collections.Immutable;
 using System.Text.Json.Serialization;
 
 namespace SmogonParser.NET.Parsers.Smogon.Json.Nature
 {
-    public class SmogonNature
+    public class SmogonNature : IEquatable<SmogonNature>
     {
         public SmogonNature(
             string name,
@@ -53,5 +54,58 @@ namespace SmogonParser.NET.Parsers.Smogon.Json.Nature
 
         [JsonPropertyName("genfamily")]
         public ImmutableHashSet<string> GenFamily { get; }
+
+        public bool Equals(SmogonNature? other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Name == other.Name &&
+                   Health == other.Health &&
+                   Attack == other.Attack &&
+                   Defense == other.Defense &&
+                   SpecialAttack == other.SpecialAttack &&
+                   SpecialDefense == other.SpecialDefense &&
+                   Speed == other.Speed &&
+                   Summary == other.Summary &&
+                   GenFamily.SetEquals(other.GenFamily);
+        }
+
+        public override bool Equals(object? obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((SmogonNature) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = new HashCode();
+            hashCode.Add(Name);
+            hashCode.Add(Health);
+            hashCode.Add(Attack);
+            hashCode.Add(Defense);
+            hashCode.Add(SpecialAttack);
+            hashCode.Add(SpecialDefense);
+            hashCode.Add(Speed);
+            hashCode.Add(Summary);
+
+            foreach (var family in GenFamily)
+            {
+                hashCode.Add(family);
+            }
+
+            return hashCode.ToHashCode();
+        }
+
+        public static bool operator ==(SmogonNature? left, SmogonNature? right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(SmogonNature? left, SmogonNature? right)
+        {
+            return !Equals(left, right);
+        }
     }
 }

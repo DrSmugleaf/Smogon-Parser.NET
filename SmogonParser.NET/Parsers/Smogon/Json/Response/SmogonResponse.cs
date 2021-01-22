@@ -1,11 +1,11 @@
-﻿using System.Collections.Immutable;
+﻿using System;
+using System.Collections.Immutable;
 using System.Text.Json.Serialization;
 using SmogonParser.NET.Parsers.Smogon.Json.Ability;
 using SmogonParser.NET.Parsers.Smogon.Json.Format;
 using SmogonParser.NET.Parsers.Smogon.Json.Generation;
 using SmogonParser.NET.Parsers.Smogon.Json.Item;
 using SmogonParser.NET.Parsers.Smogon.Json.Move;
-using SmogonParser.NET.Parsers.Smogon.Json.MoveFlag;
 using SmogonParser.NET.Parsers.Smogon.Json.Nature;
 using SmogonParser.NET.Parsers.Smogon.Json.Pokemon;
 using SmogonParser.NET.Parsers.Smogon.Json.Type;
@@ -13,7 +13,7 @@ using SmogonParser.NET.Parsers.Smogon.Json.Type;
 namespace SmogonParser.NET.Parsers.Smogon.Json.Response
 {
     [JsonConverter(typeof(SmogonResponseConverter))]
-    public class SmogonResponse
+    public class SmogonResponse : IEquatable<SmogonResponse>
     {
         public SmogonResponse(
             string generationPrefix,
@@ -22,10 +22,9 @@ namespace SmogonParser.NET.Parsers.Smogon.Json.Response
             ImmutableHashSet<SmogonFormat> formats,
             ImmutableHashSet<SmogonNature> natures,
             ImmutableHashSet<SmogonAbility> abilities,
-            ImmutableHashSet<SmogonMoveFlag> moveFlags,
             ImmutableHashSet<SmogonMove> moves,
             ImmutableHashSet<SmogonType> types,
-            ImmutableHashSet<SmogonItem> item)
+            ImmutableHashSet<SmogonItem> items)
         {
             GenerationPrefix = generationPrefix;
             Generations = generations;
@@ -33,10 +32,9 @@ namespace SmogonParser.NET.Parsers.Smogon.Json.Response
             Formats = formats;
             Natures = natures;
             Abilities = abilities;
-            MoveFlags = moveFlags;
             Moves = moves;
             Types = types;
-            Item = item;
+            Items = items;
         }
 
         public string GenerationPrefix { get; }
@@ -51,12 +49,58 @@ namespace SmogonParser.NET.Parsers.Smogon.Json.Response
 
         public ImmutableHashSet<SmogonAbility> Abilities { get; }
 
-        public ImmutableHashSet<SmogonMoveFlag> MoveFlags { get; }
-
         public ImmutableHashSet<SmogonMove> Moves { get; }
 
         public ImmutableHashSet<SmogonType> Types { get; }
 
-        public ImmutableHashSet<SmogonItem> Item { get; }
+        public ImmutableHashSet<SmogonItem> Items { get; }
+
+        public bool Equals(SmogonResponse? other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return GenerationPrefix == other.GenerationPrefix &&
+                   Generations.SetEquals(other.Generations) &&
+                   Pokemons.SetEquals(other.Pokemons) &&
+                   Formats.SetEquals(other.Formats) &&
+                   Natures.SetEquals(other.Natures) &&
+                   Abilities.SetEquals(other.Abilities) &&
+                   Moves.SetEquals(other.Moves) &&
+                   Types.SetEquals(other.Types) &&
+                   Items.SetEquals(other.Items);
+        }
+
+        public override bool Equals(object? obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((SmogonResponse) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = new HashCode();
+            hashCode.Add(GenerationPrefix);
+            hashCode.Add(Generations);
+            hashCode.Add(Pokemons);
+            hashCode.Add(Formats);
+            hashCode.Add(Natures);
+            hashCode.Add(Abilities);
+            hashCode.Add(Moves);
+            hashCode.Add(Types);
+            hashCode.Add(Items);
+            return hashCode.ToHashCode();
+        }
+
+        public static bool operator ==(SmogonResponse? left, SmogonResponse? right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(SmogonResponse? left, SmogonResponse? right)
+        {
+            return !Equals(left, right);
+        }
     }
 }

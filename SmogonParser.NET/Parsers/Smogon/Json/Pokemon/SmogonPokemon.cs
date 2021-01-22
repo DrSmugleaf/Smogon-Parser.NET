@@ -1,9 +1,10 @@
-﻿using System.Collections.Immutable;
+﻿using System;
+using System.Collections.Immutable;
 using System.Text.Json.Serialization;
 
 namespace SmogonParser.NET.Parsers.Smogon.Json.Pokemon
 {
-    public class SmogonPokemon
+    public class SmogonPokemon : IEquatable<SmogonPokemon>
     {
         public SmogonPokemon(
             string name,
@@ -78,5 +79,76 @@ namespace SmogonParser.NET.Parsers.Smogon.Json.Pokemon
 
         [JsonPropertyName("oob")]
         public SmogonOob Oob { get; }
+
+        public bool Equals(SmogonPokemon? other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Name == other.Name &&
+                   Health == other.Health &&
+                   Attack == other.Attack &&
+                   Defense == other.Defense &&
+                   SpecialAttack == other.SpecialAttack &&
+                   SpecialDefense == other.SpecialDefense &&
+                   Speed == other.Speed &&
+                   Weight == other.Weight &&
+                   Height == other.Height &&
+                   Types.SetEquals(other.Types) &&
+                   Abilities.SetEquals(other.Abilities) &&
+                   Formats.SetEquals(other.Formats) &&
+                   IsNonStandard == other.IsNonStandard &&
+                   Oob.Equals(other.Oob);
+        }
+
+        public override bool Equals(object? obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((SmogonPokemon) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = new HashCode();
+            hashCode.Add(Name);
+            hashCode.Add(Health);
+            hashCode.Add(Attack);
+            hashCode.Add(Defense);
+            hashCode.Add(SpecialAttack);
+            hashCode.Add(SpecialDefense);
+            hashCode.Add(Speed);
+            hashCode.Add(Weight);
+            hashCode.Add(Height);
+
+            foreach (var type in Types)
+            {
+                hashCode.Add(type);
+            }
+
+            foreach (var ability in Abilities)
+            {
+                hashCode.Add(ability);
+            }
+
+            foreach (var format in Formats)
+            {
+                hashCode.Add(format);
+            }
+
+            hashCode.Add(IsNonStandard);
+            hashCode.Add(Oob);
+            return hashCode.ToHashCode();
+        }
+
+        public static bool operator ==(SmogonPokemon? left, SmogonPokemon? right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(SmogonPokemon? left, SmogonPokemon? right)
+        {
+            return !Equals(left, right);
+        }
     }
 }
