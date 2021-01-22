@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using SmogonParser.NET.Parsers.Smogon.Json.Response;
@@ -14,7 +15,7 @@ namespace SmogonParser.NET.Parsers.Smogon.Json
             return $"https://www.smogon.com/dex/{generation}/pokemon";
         }
 
-        public void Download(string generation = "ss")
+        public SmogonResponse? Download(string generation)
         {
             var url = GetGenerationUrl(generation);
             var html = new WebClient().DownloadString(url);
@@ -24,7 +25,13 @@ namespace SmogonParser.NET.Parsers.Smogon.Json
             {
                 PropertyNameCaseInsensitive = true
             };
-            var response = JsonSerializer.Deserialize<SmogonResponse>(match.Groups[1].Value, options);
+
+            return JsonSerializer.Deserialize<SmogonResponse>(match.Groups[1].Value, options);
+        }
+
+        public bool TryDownload(string generation, [NotNullWhen(true)] out SmogonResponse? response)
+        {
+            return (response = Download(generation)) != null;
         }
     }
 }

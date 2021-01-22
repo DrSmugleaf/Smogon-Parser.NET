@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Text.Json.Serialization;
+using JetBrains.Annotations;
 
 namespace SmogonParser.NET.Parsers.Smogon.Json.Generation
 {
+    [PublicAPI]
     public class SmogonGeneration : IEquatable<SmogonGeneration>
     {
         public SmogonGeneration(string name, string shorthand)

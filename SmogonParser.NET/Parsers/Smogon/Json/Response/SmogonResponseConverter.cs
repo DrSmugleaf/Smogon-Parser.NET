@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+﻿using System;
+using System.Collections.Immutable;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
@@ -10,7 +11,7 @@ using SmogonParser.NET.Parsers.Smogon.Json.Item;
 using SmogonParser.NET.Parsers.Smogon.Json.Move;
 using SmogonParser.NET.Parsers.Smogon.Json.Nature;
 using SmogonParser.NET.Parsers.Smogon.Json.Pokemon;
-using SmogonParser.NET.Parsers.Smogon.Json.Type;
+using SmogonParser.NET.Parsers.Smogon.Json.Types;
 
 namespace SmogonParser.NET.Parsers.Smogon.Json.Response
 {
@@ -27,7 +28,7 @@ namespace SmogonParser.NET.Parsers.Smogon.Json.Response
             return $@"[""dex"",""dump-basics"",{{""gen"":""{generation}""}}]";
         }
 
-        public override SmogonResponse Read(ref Utf8JsonReader reader, System.Type typeToConvert, JsonSerializerOptions options)
+        public override SmogonResponse Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             reader.ReadOrThrow("injectRpcs");
 

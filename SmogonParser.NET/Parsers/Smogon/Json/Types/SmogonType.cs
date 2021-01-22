@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Immutable;
 using System.Text.Json.Serialization;
+using JetBrains.Annotations;
 
-namespace SmogonParser.NET.Parsers.Smogon.Json.Type
+namespace SmogonParser.NET.Parsers.Smogon.Json.Types
 {
     [JsonConverter(typeof(SmogonTypeConverter))]
+    [PublicAPI]
     public class SmogonType : IEquatable<SmogonType>
     {
         public SmogonType(

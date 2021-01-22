@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Immutable;
 using System.Text.Json.Serialization;
+using JetBrains.Annotations;
 
 namespace SmogonParser.NET.Parsers.Smogon.Json.Format
 {
+    [PublicAPI]
     public class SmogonFormat : IEquatable<SmogonFormat>
     {
         public SmogonFormat(string name, string shorthand, ImmutableHashSet<string> genFamily)

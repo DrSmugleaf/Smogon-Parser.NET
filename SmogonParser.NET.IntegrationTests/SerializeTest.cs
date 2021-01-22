@@ -9,7 +9,7 @@ using SmogonParser.NET.Parsers.Smogon.Json.Move;
 using SmogonParser.NET.Parsers.Smogon.Json.Nature;
 using SmogonParser.NET.Parsers.Smogon.Json.Pokemon;
 using SmogonParser.NET.Parsers.Smogon.Json.Response;
-using SmogonParser.NET.Parsers.Smogon.Json.Type;
+using SmogonParser.NET.Parsers.Smogon.Json.Types;
 
 namespace SmogonParser.NET.IntegrationTests
 {

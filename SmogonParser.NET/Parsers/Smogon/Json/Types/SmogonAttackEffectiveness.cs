@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Text.Json.Serialization;
+using JetBrains.Annotations;
 
-namespace SmogonParser.NET.Parsers.Smogon.Json.Type
+namespace SmogonParser.NET.Parsers.Smogon.Json.Types
 {
     [JsonConverter(typeof(SmogonAttackEffectivenessConverter))]
+    [PublicAPI]
     public class SmogonAttackEffectiveness : IEquatable<SmogonAttackEffectiveness>
     {
         public SmogonAttackEffectiveness(string name, decimal effectiveness)

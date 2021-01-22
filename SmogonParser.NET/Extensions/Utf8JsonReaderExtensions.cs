@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -43,7 +42,7 @@ namespace SmogonParser.NET.Extensions
             }
         }
 
-        public static T ReadOrThrow<T>(ref this Utf8JsonReader reader)
+        public static T ReadOrThrow<T>(ref this Utf8JsonReader reader) where T : notnull
         {
             reader.Read();
 
@@ -70,18 +69,26 @@ namespace SmogonParser.NET.Extensions
             return (T) (value ?? throw new NullReferenceException());
         }
 
+        public static T ReadOrThrow<T>(ref this Utf8JsonReader reader, T expectedValue) where T : notnull
+        {
+            var value = reader.ReadOrThrow<T>();
+
+            if (!value.Equals(expectedValue))
+            {
+                throw new JsonException($"Expected {expectedValue}, got {value}");
+            }
+
+            return value;
+        }
+
         public static T ReadValueOrThrow<T>(
             ref this Utf8JsonReader reader,
             string expectedKey,
             JsonSerializerOptions? options = null)
+            where T : notnull
         {
-            reader.ReadOrThrow(expectedKey, options);
+            reader.ReadOrThrow(expectedKey);
             return reader.ReadOrThrow<T>();
-        }
-
-        public static bool TryRead(ref this Utf8JsonReader reader, JsonTokenType expectedToken)
-        {
-            return reader.Read() && reader.TokenType == expectedToken;
         }
 
         public static string? Read(
@@ -113,22 +120,9 @@ namespace SmogonParser.NET.Extensions
             return str;
         }
 
-        public static string ReadOrThrow(
-            ref this Utf8JsonReader reader,
-            string expectedString,
-            JsonSerializerOptions? options = null)
-        {
-            if (!reader.TryRead(expectedString, out var val, options))
-            {
-                throw new JsonException($"Expected {expectedString}, got {val}");
-            }
-
-            return val;
-        }
-
         public static Match ReadOrThrow(ref this Utf8JsonReader reader, Regex regex)
         {
-            var str = reader.ReadStringOrThrow();
+            var str = reader.ReadOrThrow<string>();
 
             if (!regex.IsMatch(str))
             {
@@ -136,70 +130,6 @@ namespace SmogonParser.NET.Extensions
             }
 
             return regex.Match(str);
-        }
-
-        public static bool TryRead(
-            ref this Utf8JsonReader reader,
-            string expectedString,
-            [NotNullWhen(true)] out string? str,
-            JsonSerializerOptions? options = null)
-        {
-            return (str = reader.Read(expectedString, options)) != null;
-        }
-
-        public static bool TryRead(
-            ref this Utf8JsonReader reader,
-            string expectedString,
-            JsonSerializerOptions? options = null)
-        {
-            return reader.Read(expectedString, options) != null;
-        }
-
-        public static string? ReadString(ref this Utf8JsonReader reader)
-        {
-            if (!reader.Read())
-            {
-                return null;
-            }
-
-            if (reader.TokenType != JsonTokenType.String)
-            {
-                return null;
-            }
-
-            return reader.ReadString();
-        }
-
-        public static string ReadStringOrThrow(ref this Utf8JsonReader reader)
-        {
-            reader.ReadOrThrow(JsonTokenType.String);
-            return reader.GetString() ?? throw new NullReferenceException();
-        }
-
-        public static bool TryReadString(
-            ref this Utf8JsonReader reader,
-            [NotNullWhen(true)] out string? val)
-        {
-            if (!reader.TryRead(JsonTokenType.String))
-            {
-                val = null;
-                return false;
-            }
-
-            val = reader.GetString();
-            return val != null;
-        }
-
-        public static int ReadIntOrThrow(ref this Utf8JsonReader reader)
-        {
-            reader.ReadOrThrow(JsonTokenType.Number);
-            return reader.GetInt32();
-        }
-
-        public static float ReadFloatOrThrow(ref this Utf8JsonReader reader)
-        {
-            reader.ReadOrThrow(JsonTokenType.Number);
-            return reader.GetSingle();
         }
     }
 }

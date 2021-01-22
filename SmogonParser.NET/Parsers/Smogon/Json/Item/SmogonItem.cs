@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Immutable;
 using System.Text.Json.Serialization;
+using JetBrains.Annotations;
 
 namespace SmogonParser.NET.Parsers.Smogon.Json.Item
 {
+    [PublicAPI]
     public class SmogonItem : IEquatable<SmogonItem>
     {
         public SmogonItem(

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Immutable;
 using System.Text.Json.Serialization;
+using JetBrains.Annotations;
 using SmogonParser.NET.Parsers.Smogon.Json.Ability;
 using SmogonParser.NET.Parsers.Smogon.Json.Format;
 using SmogonParser.NET.Parsers.Smogon.Json.Generation;
@@ -8,10 +9,11 @@ using SmogonParser.NET.Parsers.Smogon.Json.Item;
 using SmogonParser.NET.Parsers.Smogon.Json.Move;
 using SmogonParser.NET.Parsers.Smogon.Json.Nature;
 using SmogonParser.NET.Parsers.Smogon.Json.Pokemon;
-using SmogonParser.NET.Parsers.Smogon.Json.Type;
+using SmogonParser.NET.Parsers.Smogon.Json.Types;
 
 namespace SmogonParser.NET.Parsers.Smogon.Json.Response
 {
+    [PublicAPI]
     [JsonConverter(typeof(SmogonResponseConverter))]
     public class SmogonResponse : IEquatable<SmogonResponse>
     {

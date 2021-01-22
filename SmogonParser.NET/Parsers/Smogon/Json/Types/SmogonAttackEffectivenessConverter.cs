@@ -1,14 +1,15 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using SmogonParser.NET.Extensions;
 
-namespace SmogonParser.NET.Parsers.Smogon.Json.Type
+namespace SmogonParser.NET.Parsers.Smogon.Json.Types
 {
     public class SmogonAttackEffectivenessConverter : JsonConverter<SmogonAttackEffectiveness>
     {
-        public override SmogonAttackEffectiveness Read(ref Utf8JsonReader reader, System.Type typeToConvert, JsonSerializerOptions options)
+        public override SmogonAttackEffectiveness Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            var name = reader.ReadStringOrThrow();
+            var name = reader.ReadOrThrow<string>();
             var effectiveness = reader.ReadOrThrow<decimal>();
 
             reader.ReadOrThrow(JsonTokenType.EndArray);
